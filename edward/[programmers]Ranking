@@ -1,0 +1,44 @@
+# https://school.programmers.co.kr/learn/courses/30/lessons/49191
+
+def add_set(set_, list_):
+    for x in list_:
+        set_.add(x)
+    return set_
+
+def solution(n, results):
+    answer = 0
+    win_rel = [[] for _ in range(n + 1)]
+    lose_rel = [[] for _ in range(n + 1)]
+    for game in results:
+        win_rel[game[0]].append(game[1])
+        lose_rel[game[1]].append(game[0])
+    # 노드가 -> 방향으로 전부 갈 길이(관계가 생기면) 있으면 정해짐
+    players = [[] for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        records = [0] * (n + 1)
+        win_stack = []
+        lose_stack = []
+        win_visited = [False] * (n + 1)
+        lose_visited = [False] * (n + 1)
+        win_stack.extend(win_rel[i])
+        lose_stack.extend(lose_rel[i])
+        while win_stack:
+            player = win_stack.pop()
+            if win_visited[player]: 
+                continue
+            win_visited[player] = True
+            records[player] = 1
+            if win_rel[player]:
+                win_stack.extend(win_rel[player])
+        while lose_stack:
+            player = lose_stack.pop()
+            if lose_visited[player]:
+                continue
+            lose_visited[player] = True
+            records[player] = 1
+            if lose_rel[player]:
+                lose_stack.extend(lose_rel[player])
+        print(records)
+        if sum(records) == n - 1:
+            answer += 1
+    return answer
